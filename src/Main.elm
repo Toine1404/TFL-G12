@@ -9,6 +9,13 @@ It contains a complete web application.
 -}
 
 import Browser
+import Element
+import Theme
+import Screens.Welcome as Welcome
+import Element.Background
+import Browser.Events
+import Browser.Dom
+import Task
 
 main : Program () Model Msg
 main =
@@ -19,30 +26,81 @@ main =
         , view = view
         }
 
-type alias Model = ()
+type alias Model =
+    { flavor : Theme.Flavor
+    , height : Int
+    , screen : Screen
+    , width : Int
+    }
 
-type alias Msg = ()
+type Msg
+    = ScreenSize { height : Int, width : Int }
+    | StartGame
+
+type Screen
+    = WelcomeScreen
+    | EmptyScreen
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( (), Cmd.none )
+    ( { flavor = Theme.Latte
+      , height = 480
+      , screen = WelcomeScreen
+      , width = 720
+      }
+    , Browser.Dom.getViewport
+        |> Task.perform
+            (\viewport ->
+                ScreenSize
+                    { height = floor viewport.viewport.height
+                    , width = floor viewport.viewport.width
+                    }
+            )
+    )
 
 -- UPDATE
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update _ model =
-    ( model, Cmd.none )
+update msg model =
+    case msg of
+        ScreenSize { height, width } ->
+            ( { model | height = height, width = width }
+            , Cmd.none
+            )
+
+        StartGame ->
+            ( { model | screen = EmptyScreen }
+            , Cmd.none
+            )
 
 -- SUBSCRIPTIONS
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.none
+    Browser.Events.onResize (\w h -> ScreenSize { width = w, height = h })
 
 -- VIEW
 
 view : Model -> Browser.Document Msg
-view _ =
+view model =
     { title = "TFL - G12"
-    , body = []
+    , body =
+        ( case model.screen of
+            EmptyScreen ->
+                Element.none
+            
+            WelcomeScreen ->
+                Welcome.view
+                    { backgroundColor = Theme.base model.flavor
+                    , boxColor = Theme.mantle model.flavor
+                    , buttonColor = Theme.mauve model.flavor
+                    , height = model.height
+                    , onStart = StartGame
+                    , width = model.width
+                    }
+        )
+            |> Element.layout
+                [ Element.Background.color (Theme.baseUI model.flavor)
+                ]
+            |> List.singleton
     }
