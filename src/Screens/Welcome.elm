@@ -1,5 +1,9 @@
 module Screens.Welcome exposing (..)
-{-| # Welcome screen
+
+{-|
+
+
+# Welcome screen
 
 The welcome screen is the first screen that the player sees.
 
@@ -8,10 +12,13 @@ The welcome screen is the first screen that the player sees.
 import Color exposing (Color)
 import Element exposing (Element)
 import Element.Background
-import Theme
 import Layout
+import Theme
+
+
 
 -- MODEL
+
 
 getBoxSize : { a | height : Int, width : Int } -> Int
 getBoxSize data =
@@ -19,15 +26,21 @@ getBoxSize data =
         |> min data.height
         |> min data.width
 
+
 maxBoxSize : Int
-maxBoxSize = 1000
+maxBoxSize =
+    1000
+
 
 boxPadding : Int
-boxPadding = 50
+boxPadding =
+    50
+
+
 
 -- UPDATE
-
 -- VIEW
+
 
 view :
     { backgroundColor : Color
@@ -36,44 +49,48 @@ view :
     , height : Int
     , onStart : msg
     , width : Int
-    } -> Element msg
+    }
+    -> Element msg
 view data =
     case getBoxSize data of
         size ->
             let
-                halfWidth = floor (((toFloat size) - 2 * (toFloat boxPadding)) / 2)
+                halfWidth =
+                    floor ((toFloat size - 2 * toFloat boxPadding) / 2)
 
-                newHeight = size - 2 * boxPadding
+                newHeight =
+                    size - 2 * boxPadding
             in
-                [ introductionPicture { height = newHeight, width = halfWidth }
-                , startButton
-                    { buttonColor = data.buttonColor
-                    , height = newHeight
-                    , onPress = Just data.onStart
-                    , width = halfWidth
-                    }
-                    |> Element.el [ Element.centerX, Element.centerY ]
-                ]
-                    |> List.map
-                        ( Element.el
-                            [ Element.height Element.fill
-                            , Element.width (Element.px halfWidth)
-                            ]
-                        )
-                    |> Element.row
-                        [ Element.Background.color (Theme.toElmUiColor data.boxColor)
-                        , Element.centerX
-                        , Element.centerY
-                        , Element.height (Element.px size)
-                        , Element.padding boxPadding
-                        , Element.spaceEvenly
-                        , Element.width (Element.px size)
+            [ introductionPicture { height = newHeight, width = halfWidth }
+            , startButton
+                { buttonColor = data.buttonColor
+                , height = newHeight
+                , onPress = Just data.onStart
+                , width = halfWidth
+                }
+                |> Element.el [ Element.centerX, Element.centerY ]
+            ]
+                |> List.map
+                    (Element.el
+                        [ Element.height Element.fill
+                        , Element.width (Element.px halfWidth)
                         ]
-                    |> Element.el
-                        [ Element.Background.color (Theme.toElmUiColor data.backgroundColor)
-                        , Element.height (Element.px data.height)
-                        , Element.width (Element.px data.width)
-                        ]
+                    )
+                |> Element.row
+                    [ Element.Background.color (Theme.toElmUiColor data.boxColor)
+                    , Element.centerX
+                    , Element.centerY
+                    , Element.height (Element.px size)
+                    , Element.padding boxPadding
+                    , Element.spaceEvenly
+                    , Element.width (Element.px size)
+                    ]
+                |> Element.el
+                    [ Element.Background.color (Theme.toElmUiColor data.backgroundColor)
+                    , Element.height (Element.px data.height)
+                    , Element.width (Element.px data.width)
+                    ]
+
 
 introductionPicture : { height : Int, width : Int } -> Element msg
 introductionPicture data =
@@ -85,6 +102,7 @@ introductionPicture data =
         { src = "static/cursed-person.png"
         , description = "Cursed person greeting a player who joins the game"
         }
+
 
 startButton : { buttonColor : Color, height : Int, onPress : Maybe msg, width : Int } -> Element msg
 startButton data =

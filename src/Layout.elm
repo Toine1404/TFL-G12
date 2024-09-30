@@ -1,8 +1,10 @@
 module Layout exposing
     ( tab
-    , containedButton, outlinedButton, textButton, sideList
+    , containedButton, outlinedButton, textButton
     , textInput, passwordInput
-    , loadingIndicator, itemWithSubtext
+    , itemWithSubtext
+    , sideList
+    , loadingIndicator
     )
 
 {-|
@@ -28,13 +30,16 @@ beautiful Material design Elm webpage.
 
 @docs textInput, passwordInput
 
+
 ## Items in a list
 
 @docs itemWithSubtext
 
+
 ## Lists
 
 @docs sideList
+
 
 ## Other elements
 
@@ -70,6 +75,7 @@ containedButton data =
         )
         { text = data.text, icon = data.icon, onPress = data.onPress }
 
+
 {-| Multiline item
 -}
 itemWithSubtext :
@@ -80,10 +86,10 @@ itemWithSubtext :
     , text : String
     , title : String
     }
-        -> Widget.Item msg
+    -> Widget.Item msg
 itemWithSubtext data =
     Widget.multiLineItem
-        ( { primary = data.color, onPrimary = data.color }
+        ({ primary = data.color, onPrimary = data.color }
             |> singlePalette
             |> Material.multiLineItem
         )
@@ -94,19 +100,21 @@ itemWithSubtext data =
         , text = data.text
         }
 
+
 {-| Circular loading bar indicator
 -}
 loadingIndicator :
     { color : Color
     }
-        -> Element msg
+    -> Element msg
 loadingIndicator data =
     Widget.circularProgressIndicator
-        ( { primary = data.color, onPrimary = data.color }
+        ({ primary = data.color, onPrimary = data.color }
             |> singlePalette
             |> Material.progressIndicator
         )
         Nothing
+
 
 {-| An outlined button representing an important action within a group.
 -}
@@ -124,6 +132,7 @@ outlinedButton data =
             |> Material.outlinedButton
         )
         { text = data.text, icon = data.icon, onPress = data.onPress }
+
 
 {-| Show a password field
 -}
@@ -171,14 +180,16 @@ singlePalette { primary, onPrimary } =
         }
     }
 
-sideList : { color : Color, items : List (Widget.Item msg) }-> Element msg
+
+sideList : { color : Color, items : List (Widget.Item msg) } -> Element msg
 sideList data =
     Widget.itemList
-        ( { primary = data.color, onPrimary = data.color }
+        ({ primary = data.color, onPrimary = data.color }
             |> singlePalette
             |> Material.sideSheet
         )
         data.items
+
 
 {-| A tab selector that always has an item selected.
 -}

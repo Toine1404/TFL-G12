@@ -1,21 +1,27 @@
 module Main exposing (main)
-{-| # Main module
+
+{-|
+
+
+# Main module
 
 This module is the main module that gets compiled to the single HTML file.
 
 It contains a complete web application.
 
 @docs main
+
 -}
 
 import Browser
-import Element
-import Theme
-import Screens.Welcome as Welcome
-import Element.Background
-import Browser.Events
 import Browser.Dom
+import Browser.Events
+import Element
+import Element.Background
+import Screens.Welcome as Welcome
 import Task
+import Theme
+
 
 main : Program () Model Msg
 main =
@@ -26,6 +32,7 @@ main =
         , view = view
         }
 
+
 type alias Model =
     { flavor : Theme.Flavor
     , height : Int
@@ -33,13 +40,16 @@ type alias Model =
     , width : Int
     }
 
+
 type Msg
     = ScreenSize { height : Int, width : Int }
     | StartGame
 
+
 type Screen
     = WelcomeScreen
     | EmptyScreen
+
 
 init : () -> ( Model, Cmd Msg )
 init () =
@@ -58,7 +68,10 @@ init () =
             )
     )
 
+
+
 -- UPDATE
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -73,22 +86,28 @@ update msg model =
             , Cmd.none
             )
 
+
+
 -- SUBSCRIPTIONS
+
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Browser.Events.onResize (\w h -> ScreenSize { width = w, height = h })
 
+
+
 -- VIEW
+
 
 view : Model -> Browser.Document Msg
 view model =
     { title = "TFL - G12"
     , body =
-        ( case model.screen of
+        (case model.screen of
             EmptyScreen ->
                 Element.none
-            
+
             WelcomeScreen ->
                 Welcome.view
                     { backgroundColor = Theme.base model.flavor
