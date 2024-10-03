@@ -5,6 +5,7 @@ module Layout exposing
     , itemWithSubtext
     , sideList
     , loadingIndicator
+    , svg
     )
 
 {-|
@@ -50,6 +51,8 @@ beautiful Material design Elm webpage.
 import Color exposing (Color)
 import Element exposing (Element)
 import Element.Input
+import Svg exposing (Svg)
+import Svg.Attributes
 import Widget
 import Widget.Customize as Customize
 import Widget.Icon exposing (Icon)
@@ -260,3 +263,56 @@ textInput data =
         , label = data.label
         , onChange = data.onChange
         }
+
+
+svg :
+    { aspectRatio : Float
+    , height : Int
+    , svg : Svg msg
+    , width : Int
+    , viewMinX : Float
+    , viewMaxX : Float
+    , viewMinY : Float
+    , viewMaxY : Float
+    }
+    -> Element msg
+svg data =
+    let
+        givenWidth =
+            toFloat data.width
+
+        givenHeight =
+            toFloat data.height
+
+        scaleFactorWidth =
+            givenHeight / givenWidth
+
+        innerWidth =
+            if scaleFactorWidth > data.aspectRatio then
+                givenWidth
+
+            else
+                givenHeight / data.aspectRatio
+
+        innerHeight =
+            if scaleFactorWidth > data.aspectRatio then
+                givenWidth * data.aspectRatio
+
+            else
+                givenHeight
+    in
+    Svg.svg
+        [ [ data.viewMinX, data.viewMinY, data.viewMaxX - data.viewMinX, data.viewMaxY - data.viewMinY ]
+            |> List.map String.fromFloat
+            |> String.join " "
+            |> Svg.Attributes.viewBox
+        , Svg.Attributes.width (String.fromFloat innerWidth)
+        , Svg.Attributes.height (String.fromFloat innerHeight)
+        ]
+        [ data.svg ]
+        |> Element.html
+        |> Element.el [ Element.centerX, Element.centerY ]
+        |> Element.el
+            [ Element.height (Element.px data.height)
+            , Element.width (Element.px data.width)
+            ]

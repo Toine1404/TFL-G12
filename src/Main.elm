@@ -18,6 +18,7 @@ import Browser.Dom
 import Browser.Events
 import Element
 import Element.Background
+import Screens.Farm as Farm
 import Screens.Welcome as Welcome
 import Task
 import Theme
@@ -42,13 +43,15 @@ type alias Model =
 
 
 type Msg
-    = ScreenSize { height : Int, width : Int }
+    = OnPigScreen Farm.Msg
+    | ScreenSize { height : Int, width : Int }
     | StartGame
 
 
 type Screen
-    = WelcomeScreen
-    | EmptyScreen
+    = EmptyScreen
+    | PigScreen Farm.Model
+    | WelcomeScreen
 
 
 init : () -> ( Model, Cmd Msg )
@@ -76,13 +79,25 @@ init () =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        OnPigScreen m ->
+            case model.screen of
+                PigScreen mdl ->
+                    case Farm.update m mdl of
+                        ( newMdl, cmd ) ->
+                            ( { model | screen = PigScreen newMdl }
+                            , Cmd.map OnPigScreen cmd
+                            )
+
+                _ ->
+                    ( model, Cmd.none )
+
         ScreenSize { height, width } ->
             ( { model | height = height, width = width }
             , Cmd.none
             )
 
         StartGame ->
-            ( { model | screen = EmptyScreen }
+            ( { model | screen = PigScreen Farm.init }
             , Cmd.none
             )
 
@@ -92,8 +107,16 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Browser.Events.onResize (\w h -> ScreenSize { width = w, height = h })
+subscriptions model =
+    Sub.batch
+        [ Browser.Events.onResize (\w h -> ScreenSize { width = w, height = h })
+        , case model.screen of
+            PigScreen mdl ->
+                Farm.subscriptions mdl |> Sub.map OnPigScreen
+
+            _ ->
+                Sub.none
+        ]
 
 
 
@@ -115,6 +138,14 @@ view model =
                     , buttonColor = Theme.mauve model.flavor
                     , height = model.height
                     , onStart = StartGame
+                    , width = model.width
+                    }
+
+            PigScreen mdl ->
+                Farm.view
+                    { height = model.height
+                    , model = mdl
+                    , toMsg = OnPigScreen
                     , width = model.width
                     }
         )
