@@ -3,12 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TFL - G12</title>
+    <title>Medieval Adventure - Learn History!</title>
+    <style>
+        /* Basic styling for a medieval-themed website */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/Users/isladonj/Downloads/medieval.png_large'); /* Replace with your image URL */
+            background-size: cover; /* Ensures the background covers the entire viewport */
+            background-position: center; /* Centers the background image */
+            background-attachment: fixed; /* Keeps the background fixed during scrolling */
+            background-repeat: no-repeat; /* Prevents the background from repeating */
+            z-index: -1; /* Keeps the background behind the content */
+        }
+        .container {
+            text-align: center;
+            padding-top: 100px;
+        }
+        h1 {
+            font-size: 4rem;
+            color: #b34c00;
+            text-shadow: 2px 2px 4px #000;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 20px auto;
+            width: 60%;
+            color: #000000;
+        }
+        
+        .start-btn {
+            background-color: #b34c00;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        .start-btn:hover {
+            background-color: #e68a00;
+        }
+        .info-btn {
+            background-color: #e6b800;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .info-btn:hover {
+            background-color: #ffcc33;
+        }
+        footer {
+            margin-top: 50px;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
-    <h1>TFL - G12</h1>
-    <p>
-        hello, world!
-    </p>
+
+    <div class="container">
+        <h1>Medieval Adventure</h1>
+        <p>Welcome, young adventurer! Embark on an epic journey through the medieval times, learn about knights, castles, kings, and more. Play the game to discover the history of the Middle Ages while having fun!</p>
+        <button class="start-btn" onclick="startGame()">Start Your Quest</button>
+        <br>
+        <button class="info-btn" onclick="learnMore()">Learn More About Medieval History</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Technologies for Learning - Educational Game for Kids</p>
+    </footer>
+
+    <script>
+        // Simple script to simulate starting the game
+        function startGame() {
+            alert("Your medieval adventure begins! Get ready to explore the world of castles and knights.");
+            // Here you would navigate to your game page or initialize the game
+            window.location.href = 'game.html';  // Redirect to the game page
+        }
+
+        // Script to display more information about medieval history
+        function learnMore() {
+            alert("Medieval history spans from the 5th to the late 15th century. Learn about knights, castles, and more!");
+            // Navigate to an information page about medieval history
+            window.location.href = 'learn-more.html';  // Redirect to the information page
+        }
+    </script>
 </body>
 </html>
