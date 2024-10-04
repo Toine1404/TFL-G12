@@ -5260,11 +5260,153 @@ var $author$project$Theme$Latte = {$: 'Latte'};
 var $author$project$Main$ScreenSize = function (a) {
 	return {$: 'ScreenSize', a: a};
 };
-var $author$project$Main$WelcomeScreen = {$: 'WelcomeScreen'};
+var $author$project$Main$TownScreen = function (a) {
+	return {$: 'TownScreen', a: a};
+};
 var $elm$browser$Browser$Dom$getViewport = _Browser_withWindow(_Browser_getViewport);
+var $avh4$elm_color$Color$RgbaSpace = F4(
+	function (a, b, c, d) {
+		return {$: 'RgbaSpace', a: a, b: b, c: c, d: d};
+	});
+var $avh4$elm_color$Color$scaleFrom255 = function (c) {
+	return c / 255;
+};
+var $avh4$elm_color$Color$rgb255 = F3(
+	function (r, g, b) {
+		return A4(
+			$avh4$elm_color$Color$RgbaSpace,
+			$avh4$elm_color$Color$scaleFrom255(r),
+			$avh4$elm_color$Color$scaleFrom255(g),
+			$avh4$elm_color$Color$scaleFrom255(b),
+			1.0);
+	});
+var $author$project$Sprites$Castle$defaultDoorColor = A3($avh4$elm_color$Color$rgb255, 85, 59, 9);
+var $author$project$Sprites$Castle$defaultGrayStoneColor = A3($avh4$elm_color$Color$rgb255, 101, 101, 101);
+var $author$project$Sprites$Pig$defaultEyeballColor = A3($avh4$elm_color$Color$rgb255, 255, 255, 255);
+var $author$project$Sprites$Pig$defaultEyesColor = A3($avh4$elm_color$Color$rgb255, 0, 0, 0);
+var $author$project$Sprites$Fence$defaultFenceColor = A3($avh4$elm_color$Color$rgb255, 120, 93, 39);
+var $author$project$Sprites$House$defaultKnobColor = A3($avh4$elm_color$Color$rgb255, 0, 0, 0);
+var $author$project$Sprites$Pig$defaultNoseHoleColor = A3($avh4$elm_color$Color$rgb255, 0, 0, 0);
+var $author$project$Sprites$Farm$defaultInitInput = {
+	colorDoor: A3($avh4$elm_color$Color$rgb255, 93, 73, 40),
+	colorDoorKnob: $author$project$Sprites$House$defaultKnobColor,
+	colorFence: $author$project$Sprites$Fence$defaultFenceColor,
+	colorHouse: A3($avh4$elm_color$Color$rgb255, 168, 114, 60),
+	colorRoof: A3($avh4$elm_color$Color$rgb255, 112, 92, 72),
+	pigs: _List_fromArray(
+		[
+			{
+			colorEyeballs: $author$project$Sprites$Pig$defaultEyeballColor,
+			colorEyes: $author$project$Sprites$Pig$defaultEyesColor,
+			colorNose: A3($avh4$elm_color$Color$rgb255, 202, 127, 143),
+			colorNoseHole: $author$project$Sprites$Pig$defaultNoseHoleColor,
+			colorSkin: A3($avh4$elm_color$Color$rgb255, 214, 163, 174),
+			height: 0.75 * 1.4,
+			width: 1.4
+		},
+			{
+			colorEyeballs: $author$project$Sprites$Pig$defaultEyeballColor,
+			colorEyes: $author$project$Sprites$Pig$defaultEyesColor,
+			colorNose: A3($avh4$elm_color$Color$rgb255, 155, 73, 18),
+			colorNoseHole: $author$project$Sprites$Pig$defaultNoseHoleColor,
+			colorSkin: A3($avh4$elm_color$Color$rgb255, 118, 50, 4),
+			height: 0.75 * 1.5,
+			width: 1.5
+		},
+			{
+			colorEyeballs: $author$project$Sprites$Pig$defaultEyeballColor,
+			colorEyes: $author$project$Sprites$Pig$defaultEyesColor,
+			colorNose: A3($avh4$elm_color$Color$rgb255, 165, 131, 108),
+			colorNoseHole: $author$project$Sprites$Pig$defaultNoseHoleColor,
+			colorSkin: A3($avh4$elm_color$Color$rgb255, 126, 104, 90),
+			height: 0.75 * 1.6,
+			width: 1.6
+		}
+		]),
+	polesX: 6,
+	polesY: 4
+};
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $author$project$Sprites$PigPen$init = function (data) {
+	return {
+		now: $elm$time$Time$millisToPosix(0),
+		pigs: A2(
+			$elm$core$List$indexedMap,
+			F2(
+				function (i, newPig) {
+					return {
+						colorEyeballs: newPig.colorEyeballs,
+						colorEyes: newPig.colorEyes,
+						colorNose: newPig.colorNose,
+						colorNoseHole: newPig.colorNoseHole,
+						colorSkin: newPig.colorSkin,
+						height: newPig.height,
+						startX: A2(
+							$elm$core$Basics$min,
+							1,
+							function (n) {
+								return n / data.polesX;
+							}(
+								A2($elm$core$Basics$modBy, data.polesX, i))),
+						startY: function (n) {
+							return n / data.polesY;
+						}(
+							A2($elm$core$Basics$modBy, data.polesY, i)),
+						stopX: A2(
+							$elm$core$Basics$min,
+							1,
+							function (n) {
+								return n / data.polesX;
+							}(
+								A2($elm$core$Basics$modBy, data.polesX, i))),
+						stopY: function (n) {
+							return n / data.polesY;
+						}(
+							A2($elm$core$Basics$modBy, data.polesY, i)),
+						t0: $elm$time$Time$millisToPosix(0),
+						walkingSpeed: A2($elm$core$Basics$max, data.polesX, data.polesY) / 50,
+						width: newPig.width
+					};
+				}),
+			data.pigs),
+		polesX: data.polesX,
+		polesY: data.polesY
+	};
+};
+var $author$project$Sprites$Farm$init = function (data) {
+	return {
+		colorDoor: data.colorDoor,
+		colorDoorKnob: data.colorDoorKnob,
+		colorFence: data.colorFence,
+		colorHouse: data.colorHouse,
+		colorRoof: data.colorRoof,
+		pen: $author$project$Sprites$PigPen$init(
+			{pigs: data.pigs, polesX: data.polesX, polesY: data.polesY})
+	};
+};
+var $author$project$Sprites$Town$init = {
+	colorCastleDoor: $author$project$Sprites$Castle$defaultDoorColor,
+	colorCastleWall: $author$project$Sprites$Castle$defaultGrayStoneColor,
+	farm1: $author$project$Sprites$Farm$init($author$project$Sprites$Farm$defaultInitInput),
+	farm2: $author$project$Sprites$Farm$init($author$project$Sprites$Farm$defaultInitInput)
+};
+var $author$project$Screens$Town$init = $author$project$Sprites$Town$init;
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{flavor: $author$project$Theme$Latte, height: 480, screen: $author$project$Main$WelcomeScreen, width: 720},
+		{
+			flavor: $author$project$Theme$Latte,
+			height: 480,
+			screen: $author$project$Main$TownScreen($author$project$Screens$Town$init),
+			width: 720
+		},
 		A2(
 			$elm$core$Task$perform,
 			function (viewport) {
@@ -5278,6 +5420,9 @@ var $author$project$Main$init = function (_v0) {
 };
 var $author$project$Main$OnPigScreen = function (a) {
 	return {$: 'OnPigScreen', a: a};
+};
+var $author$project$Main$OnTownScreen = function (a) {
+	return {$: 'OnTownScreen', a: a};
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$map = _Platform_map;
@@ -5869,10 +6014,6 @@ var $elm$time$Time$onEffects = F3(
 				},
 				killTask));
 	});
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
 var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $elm$time$Time$onSelfMsg = F3(
 	function (router, interval, state) {
@@ -6061,6 +6202,27 @@ var $author$project$Sprites$Farm$subscriptions = function (model) {
 var $author$project$Screens$Farm$subscriptions = function (model) {
 	return $author$project$Sprites$Farm$subscriptions(model);
 };
+var $author$project$Sprites$Town$OnFarm1 = function (a) {
+	return {$: 'OnFarm1', a: a};
+};
+var $author$project$Sprites$Town$OnFarm2 = function (a) {
+	return {$: 'OnFarm2', a: a};
+};
+var $author$project$Sprites$Town$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$batch(
+		_List_fromArray(
+			[
+				A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Sprites$Town$OnFarm1,
+				$author$project$Sprites$Farm$subscriptions(model.farm1)),
+				A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Sprites$Town$OnFarm2,
+				$author$project$Sprites$Farm$subscriptions(model.farm2))
+			]));
+};
+var $author$project$Screens$Town$subscriptions = $author$project$Sprites$Town$subscriptions;
 var $author$project$Main$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$batch(
 		_List_fromArray(
@@ -6073,142 +6235,27 @@ var $author$project$Main$subscriptions = function (model) {
 					})),
 				function () {
 				var _v0 = model.screen;
-				if (_v0.$ === 'PigScreen') {
-					var mdl = _v0.a;
-					return A2(
-						$elm$core$Platform$Sub$map,
-						$author$project$Main$OnPigScreen,
-						$author$project$Screens$Farm$subscriptions(mdl));
-				} else {
-					return $elm$core$Platform$Sub$none;
+				switch (_v0.$) {
+					case 'PigScreen':
+						var mdl = _v0.a;
+						return A2(
+							$elm$core$Platform$Sub$map,
+							$author$project$Main$OnPigScreen,
+							$author$project$Screens$Farm$subscriptions(mdl));
+					case 'TownScreen':
+						var mdl = _v0.a;
+						return A2(
+							$elm$core$Platform$Sub$map,
+							$author$project$Main$OnTownScreen,
+							$author$project$Screens$Town$subscriptions(mdl));
+					default:
+						return $elm$core$Platform$Sub$none;
 				}
 			}()
 			]));
 };
 var $author$project$Main$PigScreen = function (a) {
 	return {$: 'PigScreen', a: a};
-};
-var $avh4$elm_color$Color$RgbaSpace = F4(
-	function (a, b, c, d) {
-		return {$: 'RgbaSpace', a: a, b: b, c: c, d: d};
-	});
-var $avh4$elm_color$Color$scaleFrom255 = function (c) {
-	return c / 255;
-};
-var $avh4$elm_color$Color$rgb255 = F3(
-	function (r, g, b) {
-		return A4(
-			$avh4$elm_color$Color$RgbaSpace,
-			$avh4$elm_color$Color$scaleFrom255(r),
-			$avh4$elm_color$Color$scaleFrom255(g),
-			$avh4$elm_color$Color$scaleFrom255(b),
-			1.0);
-	});
-var $author$project$Sprites$Pig$defaultEyeballColor = A3($avh4$elm_color$Color$rgb255, 255, 255, 255);
-var $author$project$Sprites$Pig$defaultEyesColor = A3($avh4$elm_color$Color$rgb255, 0, 0, 0);
-var $author$project$Sprites$Fence$defaultFenceColor = A3($avh4$elm_color$Color$rgb255, 120, 93, 39);
-var $author$project$Sprites$House$defaultKnobColor = A3($avh4$elm_color$Color$rgb255, 0, 0, 0);
-var $author$project$Sprites$Pig$defaultNoseHoleColor = A3($avh4$elm_color$Color$rgb255, 0, 0, 0);
-var $author$project$Sprites$Farm$defaultInitInput = {
-	colorDoor: A3($avh4$elm_color$Color$rgb255, 93, 73, 40),
-	colorDoorKnob: $author$project$Sprites$House$defaultKnobColor,
-	colorFence: $author$project$Sprites$Fence$defaultFenceColor,
-	colorHouse: A3($avh4$elm_color$Color$rgb255, 168, 114, 60),
-	colorRoof: A3($avh4$elm_color$Color$rgb255, 112, 92, 72),
-	pigs: _List_fromArray(
-		[
-			{
-			colorEyeballs: $author$project$Sprites$Pig$defaultEyeballColor,
-			colorEyes: $author$project$Sprites$Pig$defaultEyesColor,
-			colorNose: A3($avh4$elm_color$Color$rgb255, 202, 127, 143),
-			colorNoseHole: $author$project$Sprites$Pig$defaultNoseHoleColor,
-			colorSkin: A3($avh4$elm_color$Color$rgb255, 214, 163, 174),
-			height: 0.75 * 1.4,
-			width: 1.4
-		},
-			{
-			colorEyeballs: $author$project$Sprites$Pig$defaultEyeballColor,
-			colorEyes: $author$project$Sprites$Pig$defaultEyesColor,
-			colorNose: A3($avh4$elm_color$Color$rgb255, 155, 73, 18),
-			colorNoseHole: $author$project$Sprites$Pig$defaultNoseHoleColor,
-			colorSkin: A3($avh4$elm_color$Color$rgb255, 118, 50, 4),
-			height: 0.75 * 1.5,
-			width: 1.5
-		},
-			{
-			colorEyeballs: $author$project$Sprites$Pig$defaultEyeballColor,
-			colorEyes: $author$project$Sprites$Pig$defaultEyesColor,
-			colorNose: A3($avh4$elm_color$Color$rgb255, 165, 131, 108),
-			colorNoseHole: $author$project$Sprites$Pig$defaultNoseHoleColor,
-			colorSkin: A3($avh4$elm_color$Color$rgb255, 126, 104, 90),
-			height: 0.75 * 1.6,
-			width: 1.6
-		}
-		]),
-	polesX: 6,
-	polesY: 4
-};
-var $elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
-	});
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $author$project$Sprites$PigPen$init = function (data) {
-	return {
-		now: $elm$time$Time$millisToPosix(0),
-		pigs: A2(
-			$elm$core$List$indexedMap,
-			F2(
-				function (i, newPig) {
-					return {
-						colorEyeballs: newPig.colorEyeballs,
-						colorEyes: newPig.colorEyes,
-						colorNose: newPig.colorNose,
-						colorNoseHole: newPig.colorNoseHole,
-						colorSkin: newPig.colorSkin,
-						height: newPig.height,
-						startX: A2(
-							$elm$core$Basics$min,
-							1,
-							function (n) {
-								return n / data.polesX;
-							}(
-								A2($elm$core$Basics$modBy, data.polesX, i))),
-						startY: function (n) {
-							return n / data.polesY;
-						}(
-							A2($elm$core$Basics$modBy, data.polesY, i)),
-						stopX: A2(
-							$elm$core$Basics$min,
-							1,
-							function (n) {
-								return n / data.polesX;
-							}(
-								A2($elm$core$Basics$modBy, data.polesX, i))),
-						stopY: function (n) {
-							return n / data.polesY;
-						}(
-							A2($elm$core$Basics$modBy, data.polesY, i)),
-						t0: $elm$time$Time$millisToPosix(0),
-						walkingSpeed: A2($elm$core$Basics$max, data.polesX, data.polesY) / 50,
-						width: newPig.width
-					};
-				}),
-			data.pigs),
-		polesX: data.polesX,
-		polesY: data.polesY
-	};
-};
-var $author$project$Sprites$Farm$init = function (data) {
-	return {
-		colorDoor: data.colorDoor,
-		colorDoorKnob: data.colorDoorKnob,
-		colorFence: data.colorFence,
-		colorHouse: data.colorHouse,
-		colorRoof: data.colorRoof,
-		pen: $author$project$Sprites$PigPen$init(
-			{pigs: data.pigs, polesX: data.polesX, polesY: data.polesY})
-	};
 };
 var $author$project$Screens$Farm$init = $author$project$Sprites$Farm$init($author$project$Sprites$Farm$defaultInitInput);
 var $elm$core$Platform$Cmd$map = _Platform_map;
@@ -6561,6 +6608,31 @@ var $author$project$Sprites$Farm$update = F2(
 			cmd);
 	});
 var $author$project$Screens$Farm$update = $author$project$Sprites$Farm$update;
+var $author$project$Sprites$Town$update = F2(
+	function (msg, model) {
+		if (msg.$ === 'OnFarm1') {
+			var m = msg.a;
+			var _v1 = A2($author$project$Sprites$Farm$update, m, model.farm1);
+			var mdl = _v1.a;
+			var cmd = _v1.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{farm1: mdl}),
+				A2($elm$core$Platform$Cmd$map, $author$project$Sprites$Town$OnFarm1, cmd));
+		} else {
+			var m = msg.a;
+			var _v2 = A2($author$project$Sprites$Farm$update, m, model.farm2);
+			var mdl = _v2.a;
+			var cmd = _v2.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{farm2: mdl}),
+				A2($elm$core$Platform$Cmd$map, $author$project$Sprites$Town$OnFarm2, cmd));
+		}
+	});
+var $author$project$Screens$Town$update = $author$project$Sprites$Town$update;
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
@@ -6579,6 +6651,24 @@ var $author$project$Main$update = F2(
 								screen: $author$project$Main$PigScreen(newMdl)
 							}),
 						A2($elm$core$Platform$Cmd$map, $author$project$Main$OnPigScreen, cmd));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			case 'OnTownScreen':
+				var m = msg.a;
+				var _v3 = model.screen;
+				if (_v3.$ === 'TownScreen') {
+					var mdl = _v3.a;
+					var _v4 = A2($author$project$Screens$Town$update, m, mdl);
+					var newMdl = _v4.a;
+					var cmd = _v4.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								screen: $author$project$Main$TownScreen(newMdl)
+							}),
+						A2($elm$core$Platform$Cmd$map, $author$project$Main$OnTownScreen, cmd));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
@@ -6617,27 +6707,6 @@ var $author$project$Theme$base = function (flavor) {
 			return $noordstar$elm_palette$Catppuccin$Mocha$base;
 	}
 };
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
-var $mdgriffith$elm_ui$Internal$Model$Rgba = F4(
-	function (a, b, c, d) {
-		return {$: 'Rgba', a: a, b: b, c: c, d: d};
-	});
-var $mdgriffith$elm_ui$Element$fromRgb = function (clr) {
-	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red, clr.green, clr.blue, clr.alpha);
-};
-var $avh4$elm_color$Color$toRgba = function (_v0) {
-	var r = _v0.a;
-	var g = _v0.b;
-	var b = _v0.c;
-	var a = _v0.d;
-	return {alpha: a, blue: b, green: g, red: r};
-};
-var $author$project$Theme$toElmUiColor = A2($elm$core$Basics$composeR, $avh4$elm_color$Color$toRgba, $mdgriffith$elm_ui$Element$fromRgb);
-var $author$project$Theme$baseUI = A2($elm$core$Basics$composeR, $author$project$Theme$base, $author$project$Theme$toElmUiColor);
 var $mdgriffith$elm_ui$Internal$Model$Colored = F3(
 	function (a, b, c) {
 		return {$: 'Colored', a: a, b: b, c: c};
@@ -6679,6 +6748,43 @@ var $mdgriffith$elm_ui$Element$Background$color = function (clr) {
 			'background-color',
 			clr));
 };
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $noordstar$elm_palette$Catppuccin$Frappe$green = A3($avh4$elm_color$Color$rgb255, 166, 209, 137);
+var $noordstar$elm_palette$Catppuccin$Latte$green = A3($avh4$elm_color$Color$rgb255, 64, 160, 43);
+var $noordstar$elm_palette$Catppuccin$Macchiato$green = A3($avh4$elm_color$Color$rgb255, 166, 218, 149);
+var $noordstar$elm_palette$Catppuccin$Mocha$green = A3($avh4$elm_color$Color$rgb255, 166, 227, 161);
+var $author$project$Theme$green = function (flavor) {
+	switch (flavor.$) {
+		case 'Frappe':
+			return $noordstar$elm_palette$Catppuccin$Frappe$green;
+		case 'Latte':
+			return $noordstar$elm_palette$Catppuccin$Latte$green;
+		case 'Macchiato':
+			return $noordstar$elm_palette$Catppuccin$Macchiato$green;
+		default:
+			return $noordstar$elm_palette$Catppuccin$Mocha$green;
+	}
+};
+var $mdgriffith$elm_ui$Internal$Model$Rgba = F4(
+	function (a, b, c, d) {
+		return {$: 'Rgba', a: a, b: b, c: c, d: d};
+	});
+var $mdgriffith$elm_ui$Element$fromRgb = function (clr) {
+	return A4($mdgriffith$elm_ui$Internal$Model$Rgba, clr.red, clr.green, clr.blue, clr.alpha);
+};
+var $avh4$elm_color$Color$toRgba = function (_v0) {
+	var r = _v0.a;
+	var g = _v0.b;
+	var b = _v0.c;
+	var a = _v0.d;
+	return {alpha: a, blue: b, green: g, red: r};
+};
+var $author$project$Theme$toElmUiColor = A2($elm$core$Basics$composeR, $avh4$elm_color$Color$toRgba, $mdgriffith$elm_ui$Element$fromRgb);
+var $author$project$Theme$greenUI = A2($elm$core$Basics$composeR, $author$project$Theme$green, $author$project$Theme$toElmUiColor);
 var $mdgriffith$elm_ui$Internal$Style$classes = {above: 'a', active: 'atv', alignBottom: 'ab', alignCenterX: 'cx', alignCenterY: 'cy', alignContainerBottom: 'acb', alignContainerCenterX: 'accx', alignContainerCenterY: 'accy', alignContainerRight: 'acr', alignLeft: 'al', alignRight: 'ar', alignTop: 'at', alignedHorizontally: 'ah', alignedVertically: 'av', any: 's', behind: 'bh', below: 'b', bold: 'w7', borderDashed: 'bd', borderDotted: 'bdt', borderNone: 'bn', borderSolid: 'bs', capturePointerEvents: 'cpe', clip: 'cp', clipX: 'cpx', clipY: 'cpy', column: 'c', container: 'ctr', contentBottom: 'cb', contentCenterX: 'ccx', contentCenterY: 'ccy', contentLeft: 'cl', contentRight: 'cr', contentTop: 'ct', cursorPointer: 'cptr', cursorText: 'ctxt', focus: 'fcs', focusedWithin: 'focus-within', fullSize: 'fs', grid: 'g', hasBehind: 'hbh', heightContent: 'hc', heightExact: 'he', heightFill: 'hf', heightFillPortion: 'hfp', hover: 'hv', imageContainer: 'ic', inFront: 'fr', inputLabel: 'lbl', inputMultiline: 'iml', inputMultilineFiller: 'imlf', inputMultilineParent: 'imlp', inputMultilineWrapper: 'implw', inputText: 'it', italic: 'i', link: 'lnk', nearby: 'nb', noTextSelection: 'notxt', onLeft: 'ol', onRight: 'or', opaque: 'oq', overflowHidden: 'oh', page: 'pg', paragraph: 'p', passPointerEvents: 'ppe', root: 'ui', row: 'r', scrollbars: 'sb', scrollbarsX: 'sbx', scrollbarsY: 'sby', seButton: 'sbt', single: 'e', sizeByCapital: 'cap', spaceEvenly: 'sev', strike: 'sk', text: 't', textCenter: 'tc', textExtraBold: 'w8', textExtraLight: 'w2', textHeavy: 'w9', textJustify: 'tj', textJustifyAll: 'tja', textLeft: 'tl', textLight: 'w3', textMedium: 'w5', textNormalWeight: 'w4', textRight: 'tr', textSemiBold: 'w6', textThin: 'w1', textUnitalicized: 'tun', transition: 'ts', transparent: 'clr', underline: 'u', widthContent: 'wc', widthExact: 'we', widthFill: 'wf', widthFillPortion: 'wfp', wrapped: 'wrp'};
 var $mdgriffith$elm_ui$Internal$Model$Attr = function (a) {
 	return {$: 'Attr', a: a};
@@ -13206,6 +13312,250 @@ var $author$project$Screens$Farm$view = function (data) {
 				width: data.width - (2 * $author$project$Screens$Farm$paddingSize)
 			}));
 };
+var $author$project$Screens$Town$paddingSize = 30;
+var $author$project$Sprites$Castle$transformStandard = function (data) {
+	return $elm$svg$Svg$Attributes$transform(
+		function (coords) {
+			return 'matrix(' + (coords + ')');
+		}(
+			A2(
+				$elm$core$String$join,
+				' ',
+				A2(
+					$elm$core$List$map,
+					$elm$core$String$fromFloat,
+					_List_fromArray(
+						[data.width, 0, 0, data.height, data.x, data.y])))));
+};
+var $author$project$Sprites$Castle$castle = function (data) {
+	return A2(
+		$elm$svg$Svg$g,
+		_List_fromArray(
+			[
+				$elm$svg$Svg$Attributes$fill(
+				$avh4$elm_color$Color$toCssString(data.colorDoor)),
+				$author$project$Sprites$Castle$transformStandard(
+				_Utils_update(
+					data,
+					{height: data.height / 20, width: data.width / 53}))
+			]),
+		_List_fromArray(
+			[
+				A3(
+				$elm$core$Basics$apR,
+				A2(
+					$elm$core$List$append,
+					_List_fromArray(
+						[
+							$elm$svg$Svg$Attributes$fill(
+							$avh4$elm_color$Color$toCssString(data.colorStone))
+						]),
+					$elm$core$List$singleton(
+						$elm$svg$Svg$Attributes$points(
+							A2(
+								$elm$core$String$join,
+								' ',
+								A2(
+									$elm$core$List$map,
+									function (_v0) {
+										var a = _v0.a;
+										var b = _v0.b;
+										return $elm$core$String$fromInt(a) + (',' + $elm$core$String$fromInt(b));
+									},
+									_List_fromArray(
+										[
+											_Utils_Tuple2(0, 0),
+											_Utils_Tuple2(2, 0),
+											_Utils_Tuple2(2, 1),
+											_Utils_Tuple2(3, 1),
+											_Utils_Tuple2(3, 0),
+											_Utils_Tuple2(5, 0),
+											_Utils_Tuple2(5, 1),
+											_Utils_Tuple2(6, 1),
+											_Utils_Tuple2(6, 0),
+											_Utils_Tuple2(8, 0),
+											_Utils_Tuple2(8, 1),
+											_Utils_Tuple2(9, 1),
+											_Utils_Tuple2(9, 0),
+											_Utils_Tuple2(11, 0),
+											_Utils_Tuple2(11, 1),
+											_Utils_Tuple2(12, 1),
+											_Utils_Tuple2(12, 0),
+											_Utils_Tuple2(14, 0),
+											_Utils_Tuple2(14, 1),
+											_Utils_Tuple2(15, 1),
+											_Utils_Tuple2(15, 0),
+											_Utils_Tuple2(17, 0),
+											_Utils_Tuple2(17, 5),
+											_Utils_Tuple2(14, 5),
+											_Utils_Tuple2(14, 8),
+											_Utils_Tuple2(15, 8),
+											_Utils_Tuple2(15, 7),
+											_Utils_Tuple2(17, 7),
+											_Utils_Tuple2(17, 8),
+											_Utils_Tuple2(18, 8),
+											_Utils_Tuple2(18, 7),
+											_Utils_Tuple2(20, 7),
+											_Utils_Tuple2(20, 8),
+											_Utils_Tuple2(21, 8),
+											_Utils_Tuple2(21, 7),
+											_Utils_Tuple2(23, 7),
+											_Utils_Tuple2(23, 8),
+											_Utils_Tuple2(24, 8),
+											_Utils_Tuple2(24, 7),
+											_Utils_Tuple2(26, 7),
+											_Utils_Tuple2(26, 8),
+											_Utils_Tuple2(27, 8),
+											_Utils_Tuple2(27, 7),
+											_Utils_Tuple2(29, 7),
+											_Utils_Tuple2(29, 8),
+											_Utils_Tuple2(30, 8),
+											_Utils_Tuple2(30, 7),
+											_Utils_Tuple2(32, 7),
+											_Utils_Tuple2(32, 8),
+											_Utils_Tuple2(33, 8),
+											_Utils_Tuple2(33, 7),
+											_Utils_Tuple2(35, 7),
+											_Utils_Tuple2(35, 8),
+											_Utils_Tuple2(36, 8),
+											_Utils_Tuple2(36, 7),
+											_Utils_Tuple2(38, 7),
+											_Utils_Tuple2(38, 8),
+											_Utils_Tuple2(39, 8),
+											_Utils_Tuple2(39, 7),
+											_Utils_Tuple2(41, 7),
+											_Utils_Tuple2(41, 8),
+											_Utils_Tuple2(42, 8),
+											_Utils_Tuple2(42, 5),
+											_Utils_Tuple2(39, 5),
+											_Utils_Tuple2(39, 0),
+											_Utils_Tuple2(41, 0),
+											_Utils_Tuple2(41, 1),
+											_Utils_Tuple2(42, 1),
+											_Utils_Tuple2(42, 0),
+											_Utils_Tuple2(44, 0),
+											_Utils_Tuple2(44, 1),
+											_Utils_Tuple2(45, 1),
+											_Utils_Tuple2(45, 0),
+											_Utils_Tuple2(47, 0),
+											_Utils_Tuple2(47, 1),
+											_Utils_Tuple2(48, 1),
+											_Utils_Tuple2(48, 0),
+											_Utils_Tuple2(50, 0),
+											_Utils_Tuple2(50, 1),
+											_Utils_Tuple2(51, 1),
+											_Utils_Tuple2(51, 0),
+											_Utils_Tuple2(53, 0),
+											_Utils_Tuple2(53, 5),
+											_Utils_Tuple2(50, 5),
+											_Utils_Tuple2(50, 20),
+											_Utils_Tuple2(3, 20),
+											_Utils_Tuple2(3, 5),
+											_Utils_Tuple2(0, 5)
+										])))))),
+				$elm$svg$Svg$polygon,
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$rect,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$height('6'),
+						$elm$svg$Svg$Attributes$width('7'),
+						$elm$svg$Svg$Attributes$x('23'),
+						$elm$svg$Svg$Attributes$y('14')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$ellipse,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('26.5'),
+						$elm$svg$Svg$Attributes$cy('14'),
+						$elm$svg$Svg$Attributes$rx('3.5'),
+						$elm$svg$Svg$Attributes$ry('1.761')
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$Sprites$House$defaultDoorColor = A3($avh4$elm_color$Color$rgb255, 116, 91, 61);
+var $author$project$Sprites$House$defaultRoofColor = A3($avh4$elm_color$Color$rgb255, 154, 122, 96);
+var $author$project$Sprites$House$defaultWallColor = A3($avh4$elm_color$Color$rgb255, 237, 237, 237);
+var $author$project$Sprites$House$defaultWindowColor = A3($avh4$elm_color$Color$rgb255, 101, 101, 101);
+var $author$project$Sprites$Town$house1 = function (_v0) {
+	var x = _v0.x;
+	var y = _v0.y;
+	return $author$project$Sprites$House$house(
+		{colorDoor: $author$project$Sprites$House$defaultDoorColor, colorDoorKnob: $author$project$Sprites$House$defaultKnobColor, colorRoof: $author$project$Sprites$House$defaultRoofColor, colorWall: $author$project$Sprites$House$defaultWallColor, colorWindow: $author$project$Sprites$House$defaultWindowColor, height: 0.15, width: 0.75 * 0.15, x: x, y: y});
+};
+var $author$project$Sprites$Town$transformStandard = function (data) {
+	return $elm$svg$Svg$Attributes$transform(
+		function (coords) {
+			return 'matrix(' + (coords + ')');
+		}(
+			A2(
+				$elm$core$String$join,
+				' ',
+				A2(
+					$elm$core$List$map,
+					$elm$core$String$fromFloat,
+					_List_fromArray(
+						[data.width, 0, 0, data.height, data.x, data.y])))));
+};
+var $author$project$Sprites$Town$view = function (data) {
+	return A2(
+		$elm$svg$Svg$g,
+		_List_fromArray(
+			[
+				$author$project$Sprites$Town$transformStandard(data)
+			]),
+		_List_fromArray(
+			[
+				$author$project$Sprites$Town$house1(
+				{x: 0.8, y: 0.15}),
+				$author$project$Sprites$Castle$castle(
+				{colorDoor: data.model.colorCastleDoor, colorStone: data.model.colorCastleWall, height: 0.75 * 0.3, width: 0.3, x: 0.35, y: 0.1}),
+				$author$project$Sprites$Town$house1(
+				{x: 0.25, y: 0.225}),
+				$author$project$Sprites$Town$house1(
+				{x: 0.05, y: 0.25}),
+				$author$project$Sprites$Town$house1(
+				{x: 0.65, y: 0.35}),
+				$author$project$Sprites$Town$house1(
+				{x: 0.8, y: 0.4}),
+				$author$project$Sprites$Town$house1(
+				{x: 0.3, y: 0.425}),
+				$author$project$Sprites$Town$house1(
+				{x: 0.15, y: 0.5}),
+				$author$project$Sprites$Town$house1(
+				{x: 0.25, y: 0.55}),
+				$author$project$Sprites$Farm$view(
+				{height: 0.15, model: data.model.farm1, width: 0.3, x: 0.1, y: 0.8}),
+				$author$project$Sprites$Farm$view(
+				{height: 0.15, model: data.model.farm2, width: 0.3, x: 0.65, y: 0.7}),
+				$author$project$Sprites$Town$house1(
+				{x: 0.8, y: 0.8})
+			]));
+};
+var $author$project$Screens$Town$view = function (data) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$padding($author$project$Screens$Town$paddingSize)
+			]),
+		$author$project$Layout$svg(
+			{
+				aspectRatio: 1 / 1,
+				height: data.height - (2 * $author$project$Screens$Town$paddingSize),
+				svg: $author$project$Sprites$Town$view(
+					{height: 1, model: data.model, width: 1, x: 0, y: 0}),
+				viewMaxX: 1,
+				viewMaxY: 1,
+				viewMinX: 0,
+				viewMinY: 0,
+				width: data.width - (2 * $author$project$Screens$Town$paddingSize)
+			}));
+};
 var $author$project$Screens$Welcome$boxPadding = 50;
 var $mdgriffith$elm_ui$Internal$Model$Fill = function (a) {
 	return {$: 'Fill', a: a};
@@ -14270,14 +14620,22 @@ var $author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						$mdgriffith$elm_ui$Element$Background$color(
-						$author$project$Theme$baseUI(model.flavor))
+						$author$project$Theme$greenUI(model.flavor))
 					]),
 				function () {
 					var _v0 = model.screen;
 					switch (_v0.$) {
 						case 'EmptyScreen':
 							return $mdgriffith$elm_ui$Element$none;
-						case 'WelcomeScreen':
+						case 'PigScreen':
+							var mdl = _v0.a;
+							return $author$project$Screens$Farm$view(
+								{height: model.height, model: mdl, toMsg: $author$project$Main$OnPigScreen, width: model.width});
+						case 'TownScreen':
+							var mdl = _v0.a;
+							return $author$project$Screens$Town$view(
+								{height: model.height, model: mdl, toMsg: $author$project$Main$OnTownScreen, width: model.width});
+						default:
 							return $author$project$Screens$Welcome$view(
 								{
 									backgroundColor: $author$project$Theme$base(model.flavor),
@@ -14287,10 +14645,6 @@ var $author$project$Main$view = function (model) {
 									onStart: $author$project$Main$StartGame,
 									width: model.width
 								});
-						default:
-							var mdl = _v0.a;
-							return $author$project$Screens$Farm$view(
-								{height: model.height, model: mdl, toMsg: $author$project$Main$OnPigScreen, width: model.width});
 					}
 				}())),
 		title: 'TFL - G12'

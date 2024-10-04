@@ -19,6 +19,7 @@ import Browser.Events
 import Element
 import Element.Background
 import Screens.Farm as Farm
+import Screens.Town as Town
 import Screens.Welcome as Welcome
 import Task
 import Theme
@@ -44,6 +45,7 @@ type alias Model =
 
 type Msg
     = OnPigScreen Farm.Msg
+    | OnTownScreen Town.Msg
     | ScreenSize { height : Int, width : Int }
     | StartGame
 
@@ -51,6 +53,7 @@ type Msg
 type Screen
     = EmptyScreen
     | PigScreen Farm.Model
+    | TownScreen Town.Model
     | WelcomeScreen
 
 
@@ -58,7 +61,7 @@ init : () -> ( Model, Cmd Msg )
 init () =
     ( { flavor = Theme.Latte
       , height = 480
-      , screen = WelcomeScreen
+      , screen = TownScreen Town.init
       , width = 720
       }
     , Browser.Dom.getViewport
@@ -91,6 +94,18 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
 
+        OnTownScreen m ->
+            case model.screen of
+                TownScreen mdl ->
+                    case Town.update m mdl of
+                        ( newMdl, cmd ) ->
+                            ( { model | screen = TownScreen newMdl }
+                            , Cmd.map OnTownScreen cmd
+                            )
+
+                _ ->
+                    ( model, Cmd.none )
+
         ScreenSize { height, width } ->
             ( { model | height = height, width = width }
             , Cmd.none
@@ -114,6 +129,9 @@ subscriptions model =
             PigScreen mdl ->
                 Farm.subscriptions mdl |> Sub.map OnPigScreen
 
+            TownScreen mdl ->
+                Town.subscriptions mdl |> Sub.map OnTownScreen
+
             _ ->
                 Sub.none
         ]
@@ -131,6 +149,22 @@ view model =
             EmptyScreen ->
                 Element.none
 
+            PigScreen mdl ->
+                Farm.view
+                    { height = model.height
+                    , model = mdl
+                    , toMsg = OnPigScreen
+                    , width = model.width
+                    }
+
+            TownScreen mdl ->
+                Town.view
+                    { height = model.height
+                    , model = mdl
+                    , toMsg = OnTownScreen
+                    , width = model.width
+                    }
+
             WelcomeScreen ->
                 Welcome.view
                     { backgroundColor = Theme.base model.flavor
@@ -140,17 +174,9 @@ view model =
                     , onStart = StartGame
                     , width = model.width
                     }
-
-            PigScreen mdl ->
-                Farm.view
-                    { height = model.height
-                    , model = mdl
-                    , toMsg = OnPigScreen
-                    , width = model.width
-                    }
         )
             |> Element.layout
-                [ Element.Background.color (Theme.baseUI model.flavor)
+                [ Element.Background.color (Theme.greenUI model.flavor)
                 ]
             |> List.singleton
     }
