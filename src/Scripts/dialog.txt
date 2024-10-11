@@ -1,0 +1,8 @@
+Hello, I am a merchant. I sell seeds for crops.[]I heard farmer Beire sent you
+to buy seeds! It's winter, so that's a tough moment to buy seeds.[]What would
+you like to buy?[choice A]Carrots[choice B]Potatoes[choice C]Beets[choice D]Spinach[]
+
+[A]Excellent choice! Here you go.[end]
+[B]You silly! Potatoes originate from South America. They don't exist in Europe during medieval times.[][goto E]
+[C][D]Hmm, it's not the right season for that.[][E]No, I think Beire might be happier with carrots. Here you go![end]
+
