@@ -18,6 +18,7 @@ import Browser.Dom
 import Browser.Events
 import Element
 import Element.Background
+import Screens.Dialog as Dialog
 import Screens.Farm as Farm
 import Screens.Town as Town
 import Screens.Welcome as Welcome
@@ -44,14 +45,16 @@ type alias Model =
 
 
 type Msg
-    = OnPigScreen Farm.Msg
+    = OnDialogScreen Dialog.Msg
+    | OnPigScreen Farm.Msg
     | OnTownScreen Town.Msg
     | ScreenSize { height : Int, width : Int }
     | StartGame
 
 
 type Screen
-    = EmptyScreen
+    = DialogScreen Dialog.Model
+    | EmptyScreen
     | PigScreen Farm.Model
     | TownScreen Town.Model
     | WelcomeScreen
@@ -61,7 +64,7 @@ init : () -> ( Model, Cmd Msg )
 init () =
     ( { flavor = Theme.Latte
       , height = 480
-      , screen = TownScreen Town.init
+      , screen = DialogScreen Dialog.init
       , width = 720
       }
     , Browser.Dom.getViewport
@@ -82,6 +85,18 @@ init () =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        OnDialogScreen m ->
+            case model.screen of
+                DialogScreen mdl ->
+                    case Dialog.update m mdl of
+                        ( newMdl, cmd ) ->
+                            ( { model | screen = DialogScreen newMdl }
+                            , Cmd.map OnDialogScreen cmd
+                            )
+                
+                _ ->
+                    ( model, Cmd.none )
+
         OnPigScreen m ->
             case model.screen of
                 PigScreen mdl ->
@@ -146,6 +161,17 @@ view model =
     { title = "TFL - G12"
     , body =
         (case model.screen of
+            DialogScreen mdl ->
+                Dialog.view
+                    { buttonColor = Theme.surface0 model.flavor
+                    , errorBoxColor = Theme.red model.flavor
+                    , height = model.height
+                    , model = mdl
+                    , textBoxColor = Theme.mantle model.flavor
+                    , toMsg = OnDialogScreen
+                    , width = model.width
+                    }
+
             EmptyScreen ->
                 Element.none
 
