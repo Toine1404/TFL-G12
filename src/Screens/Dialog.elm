@@ -4,9 +4,8 @@ import Color exposing (Color)
 import Element exposing (Element)
 import Layout
 import Scripts.ParseScripts as S
-import Sprites.LankyHuman exposing (lankyHuman)
-import Html
-import Html.Attributes
+import Html exposing (Html)
+import Html.Attributes exposing (style)
 import Element.Border
 import Element.Background
 import Theme
@@ -69,6 +68,9 @@ update msg model =
 
 -- VIEW
 
+flavor : Theme.Flavor
+flavor = Theme.Latte  -- or Theme.Latte, Theme.Macchiato, etc.
+
 view :
     { buttonColor : Color
     , errorBoxColor : Color
@@ -80,46 +82,68 @@ view :
     } -> Element msg
 view data =
     let
-        halfHeight = data.height // 2
-        halfWidth = data.width // 2
+        topSectionHeight = (data.height * 4) // 5
+        middleSectionHeight = 50  -- Adjust this as needed
+        bottomSectionHeight = data.height - topSectionHeight - middleSectionHeight
+
+        -- Extract the dialog information
+        dialogState =
+            case data.model.dialog of
+                Just ds -> S.view ds
+                Nothing -> { text = "When was columbus born?", options = [ ( "option1", "1451" ), ( "option2", "1492" ), ( "option3", "1506" ), ( "option4", "1510" )] }
+
+        dialogText = dialogState.text
+        options = dialogState.options
     in
-        Element.column []
-            [ Element.row []
-                [ viewNPC { height = halfHeight, width = halfWidth }
-                , case data.model.dialog of
-                    Just dialog ->
-                        viewDialog
-                            { buttonColor = data.buttonColor
-                            , height = halfHeight
-                            , model = dialog
-                            , textBoxColor = data.textBoxColor
-                            , toMsg = data.toMsg
-                            , width = data.width - halfWidth
-                            }
-                    
-                    Nothing ->
-                        Element.none
-                ]
-            , Element.row []
-                [ Html.textarea
-                    [ Html.Events.onInput (data.toMsg << SetText)
-                    , Html.Attributes.style "height" ((String.fromInt (data.height - halfHeight)) ++ "px")
-                    , Html.Attributes.style "width" ((String.fromInt halfWidth) ++ "px")
-                    ]
-                    []
-                    |> Element.html
-                    |> Element.el
-                        [ Element.height (Element.px (data.height - halfHeight))
-                        , Element.width (Element.px halfWidth)
-                        ]
-                , viewDebugScreen
-                    { height = data.height - halfHeight
-                    , model = data.model.text
-                    , textBoxColor = data.errorBoxColor
-                    , width = data.width - halfWidth
-                    }
-                ]
+    Element.column []
+        [ Element.row []
+            [ viewNPC { height = topSectionHeight, width = data.width }
             ]
+        , Element.el
+            [ Element.height (Element.px middleSectionHeight)
+            , Element.width (Element.px data.width)
+            , Element.Background.color (Theme.yellowUI flavor)
+            ]
+            (Element.text dialogText)  -- Show dialog text here
+        , Element.row []
+            [ viewOptions
+                { buttonColor = data.buttonColor
+                , model = Just { options = options, text = dialogText }  -- Pass options and text
+                , toMsg = data.toMsg
+                , width = data.width
+                }
+            ]
+        ]
+
+viewOptions : { buttonColor : Color, model : Maybe { options : List (S.Flag, String), text : String }, toMsg : Msg -> msg, width : Int } -> Element msg
+viewOptions { buttonColor, model, toMsg, width } =
+    case model of
+        Just dialogState ->
+            let
+                options = dialogState.options  -- Access options directly from dialogState
+            in
+            Element.row []
+                (List.map
+                    (\(flag, name) ->
+                        Element.el
+                            [ Element.Events.onClick (toMsg (ChooseOption flag))  -- Set the click event
+                            , Element.height (Element.px 110)
+                            , Element.width (Element.px (width // List.length options))
+                            , Element.Background.color (Theme.toElmUiColor buttonColor)
+                            , Element.Border.rounded 5  -- Optional: rounded corners
+                            , Element.Border.color (Theme.yellowUI flavor)  -- Set the border color to black
+                            , Element.Border.width 2  -- Set the border width
+                            , Element.padding 10  -- Optional: padding for the button
+                            ]
+                            (Element.text name)  -- Show the option text on the button
+                    )
+                    options
+                )
+        Nothing ->
+            Element.none
+
+
+
 
 viewDebugScreen : { height : Int, model : String, textBoxColor : Color, width : Int } -> Element msg
 viewDebugScreen data =
@@ -187,63 +211,32 @@ viewDebugScreen data =
                     , Element.width (Element.px data.width)
                     ]
 
-viewDialog : { buttonColor : Color, height : Int, model : S.DialogState, textBoxColor : Color, toMsg : Msg -> msg, width : Int } -> Element msg
-viewDialog data =
-    let
-        textPadding = Basics.min 50 (data.height // 10)
-        textHeight = data.height // 2
-    in
-        case S.view data.model of
-            { text, options } ->
-                Element.column
-                    [ Element.width (Element.px data.width)
-                    ]
-                    [ String.trim text
-                        |> String.split "\n\n"
-                        |> List.map Element.text
-                        |> Element.paragraph
-                            [ Element.Background.color (Theme.toElmUiColor data.textBoxColor)
-                            , Element.Border.rounded 25
-                            , Element.Events.onClick (data.toMsg ClickDialog)
-                            , Element.height (Element.px textHeight)
-                            , Element.padding textPadding
-                            , Element.width Element.fill
-                            ]
-                    , options
-                        |> List.map
-                            (\(flag, name) ->
-                                Element.text name
-                                    |> List.singleton
-                                    |> Element.paragraph [ Element.centerX, Element.centerY ]
-                                    |> Element.el
-                                        [ Element.Background.color (Theme.toElmUiColor data.buttonColor)
-                                        , Element.Events.onClick (data.toMsg (ChooseOption flag))
-                                        , Element.height (Element.px (data.height - textHeight))
-                                        , Element.width (Element.px ((data.width // (List.length options) - 10)))
-                                        ]
-                            )
-                        |> Element.row
-                            [ Element.centerX
-                            , Element.height (Element.px (data.height - textHeight))
-                            , Element.spacing 10
-                            ]
-                    ]
-
 viewNPC : { height : Int, width : Int } -> Element msg
 viewNPC data =
-    Layout.svg
-        { aspectRatio = 3 / 1
-        , height = data.height
-        , svg =
-            lankyHuman
-                { height = 3
-                , width = 1
-                , x = 0
-                , y = 0
-                }
-        , width = data.width
-        , viewMinX = 0
-        , viewMaxX = 1
-        , viewMinY = 0
-        , viewMaxY = 3
-        }
+    let
+        characterImage = "/Users/ivansladonja/Documents/TFL-G12/src/Images/villager_image.png"  -- Update with the correct path to your uploaded image
+
+        -- Use Element.Background.image to create a background image style
+        backgroundStyle =
+            Element.Background.image characterImage
+
+        -- Define some padding or margin to space out the dialogue bubble
+        padding = 10
+    in
+    Element.row []
+        [ Element.el
+            [ Element.height (Element.px data.height)
+            , Element.width (Element.px data.width)
+            , backgroundStyle
+            , Element.Border.rounded 15  -- Optional: rounded corners
+            , Element.padding padding
+            ]
+            (Element.text "")  -- Replace with any text or element
+        , Element.el
+            [ Element.height (Element.px (data.height - 20))
+            , Element.width (Element.px 150)
+            , Element.padding padding
+            , Element.Border.rounded 10  -- Optional: rounded corners for this element as well
+            ]
+            (Element.text "This is the character's dialogue.")  -- Pass a single Element here
+        ]
