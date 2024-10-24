@@ -93,7 +93,7 @@ update msg model =
                             ( { model | screen = DialogScreen newMdl }
                             , Cmd.map OnDialogScreen cmd
                             )
-                
+
                 _ ->
                     ( model, Cmd.none )
 

@@ -1,16 +1,20 @@
 module Scripts.ParseScripts exposing (..)
 
 import Dict exposing (Dict)
-import Parser as P exposing (Parser, (|.), (|=))
+import Parser as P exposing ((|.), (|=), Parser)
 import Recursion
 import Set
+
 
 type alias DialogState =
     { current : Dialog
     , flags : Dict Flag Dialog
     }
 
-type alias Dialog = List DialogPiece
+
+type alias Dialog =
+    List DialogPiece
+
 
 type DialogPiece
     = Choice Flag String
@@ -20,12 +24,15 @@ type DialogPiece
     | GoTo Flag
     | Message String
 
-type alias Flag = String
+
+type alias Flag =
+    String
+
 
 dialogParser : Parser Dialog
 dialogParser =
     P.succeed (::)
-        |= (P.map Message messageParser)
+        |= P.map Message messageParser
         |= P.loop []
             (\items ->
                 P.oneOf
@@ -36,6 +43,7 @@ dialogParser =
                         |. P.end
                     ]
             )
+
 
 dialogSectionParser : Parser (List DialogPiece)
 dialogSectionParser =
@@ -64,7 +72,9 @@ dialogSectionParser =
                 |. P.spaces
                 |. P.symbol "]"
                 |. P.spaces
-                |. messageParser -- NOTE: Ignored because nothing happens after a goto
+                |. messageParser
+
+            -- NOTE: Ignored because nothing happens after a goto
             , P.succeed (\m -> [ EndOfSentence, Message m ])
                 |. P.symbol "]"
                 |. P.spaces
@@ -77,6 +87,7 @@ dialogSectionParser =
                 |= messageParser
             ]
 
+
 flagParser : Parser Flag
 flagParser =
     P.variable
@@ -85,6 +96,7 @@ flagParser =
         , reserved = Set.empty
         }
 
+
 findFlags : Dialog -> Dict Flag Dialog
 findFlags =
     Recursion.runRecursion
@@ -92,13 +104,14 @@ findFlags =
             case dialog of
                 [] ->
                     Recursion.base Dict.empty
-                
+
                 (FlagSpot flag) :: tail ->
                     Recursion.recurseThen tail (Dict.insert flag tail >> Recursion.base)
-                
+
                 _ :: tail ->
                     Recursion.recurse tail
         )
+
 
 fromDialog : Dialog -> DialogState
 fromDialog dialog =
@@ -106,9 +119,11 @@ fromDialog dialog =
     , flags = findFlags dialog
     }
 
+
 fromString : String -> Result (List P.DeadEnd) Dialog
 fromString =
     P.run dialogParser
+
 
 goto : Flag -> DialogState -> Maybe DialogState
 goto flag dialog =
@@ -116,9 +131,11 @@ goto flag dialog =
         |> Dict.get flag
         |> Maybe.map (\d -> { dialog | current = d })
 
+
 messageParser : Parser String
 messageParser =
     P.chompUntilEndOr "[" |> P.getChompedString
+
 
 nextPiece : DialogState -> Maybe DialogState
 nextPiece =
@@ -127,24 +144,25 @@ nextPiece =
             case dialog.current of
                 EndOfDialogue :: _ ->
                     Recursion.base Nothing
-                
+
                 EndOfSentence :: tail ->
                     Recursion.base (Just { dialog | current = tail })
-                
-                GoTo flag :: tail ->
+
+                (GoTo flag) :: tail ->
                     case goto flag dialog of
                         Just d ->
                             Recursion.recurse d
-                        
+
                         Nothing ->
                             Recursion.recurse { dialog | current = tail }
-                
+
                 _ :: tail ->
                     Recursion.recurse { dialog | current = tail }
-                
+
                 [] ->
                     Recursion.base Nothing
         )
+
 
 view : DialogState -> { text : String, options : List ( Flag, String ) }
 view dialog =
@@ -153,35 +171,34 @@ view dialog =
             case d of
                 [] ->
                     Recursion.base { text = "", options = [] }
-                
+
                 (Choice flag message) :: tail ->
                     Recursion.recurseThen tail
                         (\data ->
                             Recursion.base { data | options = ( flag, message ) :: data.options }
                         )
-                
+
                 EndOfDialogue :: _ ->
                     Recursion.base { text = "", options = [] }
-                
+
                 EndOfSentence :: _ ->
                     Recursion.base { text = "", options = [] }
-                
-                FlagSpot _ :: tail ->
+
+                (FlagSpot _) :: tail ->
                     Recursion.recurse tail
-                
-                GoTo flag :: tail ->
+
+                (GoTo flag) :: tail ->
                     case Dict.get flag dialog.flags of
                         Just newD ->
                             Recursion.recurse newD
-                        
+
                         Nothing ->
                             Recursion.recurse tail
-                
-                Message m :: tail ->
+
+                (Message m) :: tail ->
                     Recursion.recurseThen tail
                         (\data ->
                             Recursion.base { data | text = m ++ "\n" ++ data.text }
                         )
         )
         dialog.current
-

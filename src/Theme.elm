@@ -586,10 +586,20 @@ crustUI =
 brown : Flavor -> Color.Color
 brown flavor =
     case flavor of
-        Frappe -> Color.rgb 165 42 42  -- Example RGB for a brown color
-        Latte  -> Color.rgb 139 69 19  -- Example RGB for another shade of brown
-        Macchiato -> Color.rgb 160 82 45
-        Mocha -> Color.rgb 101 67 33
+        Frappe ->
+            Color.rgb 165 42 42
+
+        -- Example RGB for a brown color
+        Latte ->
+            Color.rgb 139 69 19
+
+        -- Example RGB for another shade of brown
+        Macchiato ->
+            Color.rgb 160 82 45
+
+        Mocha ->
+            Color.rgb 101 67 33
+
 
 brownUI : Flavor -> Element.Color
 brownUI =
