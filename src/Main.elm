@@ -62,20 +62,25 @@ type Screen
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { flavor = Theme.Latte
-      , height = 480
-      , screen = DialogScreen Dialog.init
-      , width = 720
-      }
-    , Browser.Dom.getViewport
-        |> Task.perform
-            (\viewport ->
-                ScreenSize
-                    { height = floor viewport.viewport.height
-                    , width = floor viewport.viewport.width
-                    }
+    case Dialog.init "seed_seller.txt" of
+        ( mdl, cmd ) ->
+            ( { flavor = Theme.Latte
+              , height = 480
+              , screen = DialogScreen mdl
+              , width = 720
+              }
+            , Browser.Dom.getViewport
+                |> Task.perform
+                    (\viewport ->
+                        ScreenSize
+                            { height = floor viewport.viewport.height
+                            , width = floor viewport.viewport.width
+                            }
+                    )
+                |> List.singleton
+                |> List.append [ Cmd.map OnDialogScreen cmd ]
+                |> Cmd.batch
             )
-    )
 
 
 

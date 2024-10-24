@@ -11,6 +11,7 @@ import Html.Attributes exposing (style)
 import Html.Events
 import Layout
 import Parser as P
+import Scripts.DownloadScripts as D
 import Scripts.ParseScripts as S
 import Theme
 
@@ -26,12 +27,15 @@ type alias Model =
 type Msg
     = ChooseOption String
     | ClickDialog
+    | OnDownloadScript D.Msg
     | SetText String
 
 
-init : Model
-init =
-    { dialog = Nothing, text = "" }
+init : String -> ( Model, Cmd Msg )
+init scriptName =
+    ( { dialog = Nothing, text = "" }
+    , D.downloadScript { name = scriptName, toMsg = OnDownloadScript }
+    )
 
 
 
@@ -65,6 +69,12 @@ update msg model =
 
                 Nothing ->
                     model
+
+        OnDownloadScript (Err _) ->
+            { model | dialog = Nothing }
+
+        OnDownloadScript (Ok state) ->
+            { model | dialog = Just state }
 
         SetText text ->
             { model

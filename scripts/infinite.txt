@@ -1,0 +1,1 @@
+[A]Click here![]This dialog lasts forever![][goto A]
