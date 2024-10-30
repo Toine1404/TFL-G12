@@ -1,6 +1,5 @@
 module Screens.Farm exposing (..)
 
-import Color exposing (Color)
 import Element exposing (Element)
 import Layout
 import Sprites.Farm as Farm
